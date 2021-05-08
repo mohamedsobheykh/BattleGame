@@ -21,11 +21,6 @@ public:
 };
 
 
-
-#include "Stack.h"
-#include <iostream>
-using namespace std;
-
 template < typename T>
 Stack<T> ::Stack() {
 	Top = nullptr;
