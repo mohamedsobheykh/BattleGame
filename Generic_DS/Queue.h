@@ -61,6 +61,13 @@ public :
 	//toArray function to be used ONLY when drawing the queue items
 	const T* toArray(int& count);	//returns array of T (array of items)
 
+	//-------------------------------------------------
+	bool showitemat(int a, T& frntEntry); ///////(ji) show element at ant place in the queue and return it without deleting it
+	bool deletat(int b, T& frntEntry); ///////(ji) deleat an item at certain place 
+	bool insertat(int c, const T& frntEntry); ///////(ji) insert an item at certain place 
+	bool editat(int d, const T& frntEntry); //////////(ji) edit an item at an index 
+	int countitem(); //////(ji) as the title says ashan ereft
+
 
 	~Queue();
 };
@@ -79,8 +86,86 @@ Queue<T>::Queue()
 	frontPtr=nullptr;
 
 }
-/////////////////////////////////////////////////////////////////////////////////////////
+/////jiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+template <typename T>
+bool Queue<T>::showitemat(int a, T& frntEntry)
+{
+	Node<T>* trace = frontPtr;
+	for (int i = 0; i < a - 1; i++) {
+		trace = trace->getNext();
+	}
+	frntEntry = trace->getItem();
+	return true;
+}
+////jiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+template <typename T>
+bool Queue<T>::deletat(int b, T& frntEntry)
+{
+	Node<T>* trace1 = frontPtr;
+	for (int i = 0; i < b - 1; i++) {
+		trace1 = trace1->getNext();
+	}
+	frntEntry = trace1->getItem();
 
+	Node<T>* trace2 = frontPtr;
+	for (int i = 0; i < b - 2; i++) {
+		trace2 = trace2->getNext();
+	}
+	trace2->setNext(trace1->getNext());
+	return true;
+
+
+}
+////jiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+template <typename T>
+bool Queue<T>::insertat(int c, const T& frntEntry)
+{
+	Node<T>* newNodePtr = new Node<T>(frntEntry);
+	Node<T>* trace1 = frontPtr;
+	for (int i = 0; i < c - 1; i++) {
+		trace1 = trace1->getNext();
+	}
+	newNodePtr->setNext(trace1);
+
+	Node<T>* trace2 = frontPtr;
+	for (int i = 0; i < c - 2; i++) {
+		trace2 = trace2->getNext();
+	}
+	trace2->setNext(newNodePtr);
+	return true;
+
+
+}
+////jiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+template <typename T>
+bool Queue<T>::editat(int d, const T& frntEntry) {
+
+	Node<T>* trace = frontPtr;
+	for (int i = 0; i < d - 1; i++) {
+		trace = trace->getNext();
+	}
+	trace->setItem(frntEntry);
+	return true;
+
+}
+////jiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+template <typename T>
+int Queue<T>::countitem() {
+
+	if (isEmpty()) {
+		return 0;
+	}
+	else {
+		int count = 1;
+		Node<T>* trace = frontPtr;
+		while (trace->getNext()) {
+			count++;
+			trace = trace->getNext();
+		}
+		return count;
+	}
+}
+////jiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 /*
 Function: isEmpty
 Sees whether this queue is empty.
