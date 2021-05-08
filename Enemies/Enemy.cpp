@@ -53,3 +53,32 @@ int Enemy::GetArrvTime() const
 {
 	return ArrvTime;
 }
+
+void Enemy::setRLD(int rld) {
+	RLD = rld;
+}
+void Enemy::setPOW(double pow) {
+	POW = pow;
+}
+void Enemy::setSPD(int spd) {
+	SPD = spd;
+}
+void Enemy::setHealth(double he) {
+	Health = he;
+}
+
+ENMY_TYPE Enemy::getType() const {
+	return TYP;
+}
+int Enemy::getRLD() const{
+	return RLD;
+}
+double Enemy::getPOW() const {
+	return POW;
+}
+int Enemy::getSPD() const {
+	return SPD;
+}
+double Enemy::getHealth() const {
+	return Health;
+}
