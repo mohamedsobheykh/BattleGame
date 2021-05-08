@@ -4,6 +4,12 @@
 #include "Castle\Castle.h"
 #include "Generic_DS\Queue.h"
 #include "GUI\GUI.h"
+#include <fstream>
+#include <stdlib.h>
+#include <Query.h>
+#include "Enemies/Fighter.h"
+#include "Enemies/Freezer.h"
+#include "Enemies/Healer.h"
 
 // it is the controller of the project
 class Battle
@@ -14,6 +20,7 @@ private:
 	int EnemyCount;	//the actual number of enemies in the game
 	int ActiveCount, FrostedCount, KilledCount;	//no. of enemies (Active, Frosted, killed so far)
 	int CurrentTimeStep;
+	int M; //the total number of enemies
 	//Enemy * BEnemiesForDraw[MaxEnemyCount]; // This Array of Pointers is used for drawing elements in the GUI
 								  			// No matter what list type you are using to hold enemies, 
 											// you must pass the enemies to the GUI function as an array of enemy pointers. 
@@ -35,6 +42,9 @@ private:
 	//
 	// TODO: Add More Data Members As Needed
 	//
+	Queue<Enemy*> Q_dead; //Queue of dead enemies
+	fstream infile;
+	//infile.open("input.txt");
 
 public:
 	
@@ -48,7 +58,7 @@ public:
 	void AddtoDemoList(Enemy* Ptr);		//Add Enemy to the demo queue of enemies (for demo purposes only)
 	void Just_A_Demo();	//just to show a demo and should be removed in phase1 1 & 2
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)
-
+	void loadfile();
 	//
 	// TODO: Add More Member Functions As Needed
 	//

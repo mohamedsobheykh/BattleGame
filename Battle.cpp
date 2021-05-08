@@ -1,5 +1,8 @@
 #include "Battle.h"
 #include <time.h>
+#include <iostream>
+using namespace std;
+
 
 Battle::Battle()
 {	
@@ -181,4 +184,85 @@ void Battle::Demo_UpdateEnemies()
 			break;
 		}
 	}
+}
+
+void Battle::loadfile() {
+	infile.open("input.txt");
+	if (infile.is_open()) {
+		cout << "\\^o^/";
+	}
+	//Queue<Enemy> Q;
+
+	int indicator = 1; //line indicator...
+	char* t;
+	char* context = nullptr;
+	const int size = 100;
+	char line[size];
+
+	while (infile.getline(line, size)) {
+		if (indicator == 1) {
+			t = strtok_s(line, " ", &context);
+			BCastle.SetHealth(atoi(t));
+			t = strtok_s(context, " ", &context);
+			BCastle.SetN(atoi(t));
+			t = strtok_s(context, " ", &context);
+			BCastle.SetCP(atoi(t));
+			indicator++;
+
+		}
+		else if (indicator == 2) {
+			t = strtok_s(line, " ", &context);
+			M = atoi(t);
+			indicator++;
+		}
+		else if (indicator == 3) {
+			for (int j = 0; j < M; j++) {
+				t = strtok_s(line, " ", &context);
+				int a = atoi(t);
+				t = strtok_s(context, " ", &context);
+				int b = atoi(t);
+				t = strtok_s(context, " ", &context);
+				int c = atoi(t);
+				t = strtok_s(context, " ", &context);
+				int d = atoi(t);
+				t = strtok_s(context, " ", &context);
+				int e = atoi(t);
+				t = strtok_s(context, " ", &context);
+				int f = atoi(t);
+				t = strtok_s(context, " ", &context);
+				int g = atoi(t);
+				if (b == 0) {
+					Fighter recca(a, c, MaxDistance);
+					recca.setRLD(f);
+					recca.setPOW(e);
+					recca.setSPD(g);
+					recca.setHealth(d);
+					Enemy* re = &recca;
+					Q_Inactive.enqueue(re);
+				}
+				else if (b == 1) {
+					Healer tama(a, c, MaxDistance);
+					tama.setRLD(f);
+					tama.setPOW(e);
+					tama.setSPD(g);
+					tama.setHealth(d);
+					Enemy* ta = &tama;
+					Q_Inactive.enqueue(ta);
+				}
+				else if (b == 2) {
+					Freezer enyosha(a, c, MaxDistance);
+					enyosha.setRLD(f);
+					enyosha.setPOW(e);
+					enyosha.setSPD(g);
+					enyosha.setHealth(d);
+					Enemy* en = &enyosha;
+					Q_Inactive.enqueue(en);
+
+				}
+			}
+		}
+	}
+
+	(infile).close();
+
 }
