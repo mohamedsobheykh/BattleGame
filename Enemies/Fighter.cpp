@@ -4,7 +4,7 @@
 ENMY_TYPE Fighter:: getTYP() const {
 	return FIGHTER;
 }
-Fighter::Fighter( int id, int arrTime, int d = MaxDistance) : Enemy( id, arrTime,  d = MaxDistance) {
+Fighter::Fighter( int id, int arrTime, int d) : Enemy( id, arrTime,  d) {
 	TYP = FIGHTER;
 }
 Fighter::~Fighter() {
