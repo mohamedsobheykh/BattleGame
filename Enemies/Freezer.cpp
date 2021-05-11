@@ -1,7 +1,7 @@
 #include "Freezer.h"
 
 
-ENMY_TYPE Freezer::getTYP() const {
+ENMY_TYPE Freezer::getType() const {
 	return FREEZER;
 }
 

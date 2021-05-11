@@ -52,12 +52,12 @@ void Battle::RunSimulation()
 	
 }
 
-
+/*
 //This is just a demo function for project introductory phase
 //It should be removed in phases 1&2
 void Battle::Just_A_Demo()
-{	
-	
+{
+
 	pGUI->PrintMessage("Just a Demo. Enter Enemies Count(next phases should read I/P filename):");
 	EnemyCount = atoi(pGUI->GetString().c_str());	//get user input as a string then convert to integer
 
@@ -69,19 +69,47 @@ void Battle::Just_A_Demo()
 	// THIS IS JUST A DEMO Function
 	// IT SHOULD BE REMOVED IN PHASE 1 AND PHASE 2
 	//
-	 
+
 	srand(time(NULL));
 	int Enemy_id = 0;
-	int ArrivalTime=1;
-	Enemy* pE= NULL;
+	int ArrivalTime = 1;
+	Enemy* pE = NULL;
 	//Create Random enemies and add them all to inactive queue
-	for(int i=0; i<EnemyCount; i++)
-	{			
-		ArrivalTime += (rand()%3);	//Randomize arrival time
-		pE = new Enemy(++Enemy_id,ArrivalTime);
-		pE->SetStatus( INAC); //initiall all enemies are inactive
+	for (int i = 0; i < EnemyCount; i++)
+	{
+		ArrivalTime += (rand() % 3);	//Randomize arrival time
+		pE = new Enemy(++Enemy_id, ArrivalTime);
+		pE->SetStatus(INAC); //initiall all enemies are inactive
 		Q_Inactive.enqueue(pE);		//Add created enemy to inactive Queue
-	}	
+	}
+
+	AddAllListsToDrawingList();
+	pGUI->UpdateInterface(CurrentTimeStep);	//upadte interface to show the initial case where all enemies are still inactive
+
+	pGUI->waitForClick();
+
+	while (KilledCount < EnemyCount)	//as long as some enemies are alive (should be updated in next phases)
+	{
+		CurrentTimeStep++;
+		ActivateEnemies();
+
+		Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes only)
+
+		pGUI->ResetDrawingList();
+		AddAllListsToDrawingList();
+		pGUI->UpdateInterface(CurrentTimeStep);
+		Sleep(250);
+	}
+}
+*/
+void Battle::Just_A_Demo()
+{	
+	loadfile();
+
+	pGUI->waitForClick();
+
+	CurrentTimeStep = 0;
+	 
 
 	AddAllListsToDrawingList();
 	pGUI->UpdateInterface(CurrentTimeStep);	//upadte interface to show the initial case where all enemies are still inactive
@@ -98,7 +126,7 @@ void Battle::Just_A_Demo()
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
 		pGUI->UpdateInterface(CurrentTimeStep);
-		Sleep(250);
+		pGUI->waitForClick();
 	}		
 }
 
@@ -108,8 +136,10 @@ void Battle::AddAllListsToDrawingList()
 	//Add inactive queue to drawing list
 	int InactiveCount;
 	Enemy* const * EnemyList = Q_Inactive.toArray(InactiveCount);
-	for(int i=0; i<InactiveCount; i++)
+	for (int i = 0; i < InactiveCount; i++)
+	{
 		pGUI->AddToDrawingList(EnemyList[i]);
+	}
 
 	//Add other lists to drawing list
 	//TO DO
@@ -139,10 +169,12 @@ void Battle::ActivateEnemies()
 void Battle::Demo_UpdateEnemies()	
 {
 	Enemy* pE;
-	int Prop;
-	//Freeze, activate, and kill propablities (for sake of demo)
-	int FreezProp = 5, ActvProp = 10, KillProp = 1;	
-	srand(time(0));
+
+	int ACTV_To_FRST = 0;
+	int ACTV_To_KILL = 0;
+	int FRST_To_ACTV = 0;
+	int FRST_To_KILL = 0;
+
 	for(int i=0; i<DemoListCount; i++)
 	{
 		pE = DemoList[i];
@@ -150,33 +182,35 @@ void Battle::Demo_UpdateEnemies()
 		{
 		case ACTV:
 			pE->DecrementDist();	//move the enemy towards the castle
-			Prop = rand()%100;
-			if(Prop < FreezProp)		//with Freeze propablity, change some active enemies to be frosted
+			
+			
+			
+			if (ACTV_To_FRST++ < 2)		//with Freeze propablity, change some active enemies to be frosted
 			{
-				pE->SetStatus(FRST); 
+				pE->SetStatus(FRST);
 				ActiveCount--;
 				FrostedCount++;
 			}
-			else	if (Prop < (FreezProp+KillProp) )	//with kill propablity, kill some active enemies
+			else	if (ACTV_To_KILL++ < 1)	//with kill propablity, kill some active enemies
 					{
-						pE->SetStatus(KILD);	
+						pE->SetStatus(KILD);
 						ActiveCount--;
 						KilledCount++;
 					}
 			
 			break;
 		case FRST:
-			Prop = rand()%100;
-			if(Prop < ActvProp)			//with activation propablity, change restore some frosted enemies to be active again
+
+			
+			if (FRST_To_ACTV++ < 2)			//with activation propablity, change restore some frosted enemies to be active again
 			{
 				pE->SetStatus(ACTV);
 				ActiveCount++;
 				FrostedCount--;
 			}
-
-			else	if (Prop < (ActvProp+KillProp) )			//with kill propablity, kill some frosted enemies
+			else	if (FRST_To_KILL++ < 1)			//with kill propablity, kill some frosted enemies
 					{
-						pE->SetStatus(KILD);	
+						pE->SetStatus(KILD);
 						FrostedCount--;
 						KilledCount++;
 					}
@@ -198,7 +232,7 @@ void Battle::loadfile() {
 	char* context = nullptr;
 	const int size = 100;
 	char line[size];
-
+	int ccc = 0;
 	while (infile.getline(line, size)) {
 		if (indicator == 1) {
 			t = strtok_s(line, " ", &context);
@@ -208,57 +242,57 @@ void Battle::loadfile() {
 			t = strtok_s(context, " ", &context);
 			BCastle.SetCP(atoi(t));
 			indicator++;
-
 		}
 		else if (indicator == 2) {
 			t = strtok_s(line, " ", &context);
 			M = atoi(t);
+			EnemyCount = M;
 			indicator++;
 		}
 		else if (indicator == 3) {
-			for (int j = 0; j < M; j++) {
-				t = strtok_s(line, " ", &context);
-				int a = atoi(t);
-				t = strtok_s(context, " ", &context);
-				int b = atoi(t);
-				t = strtok_s(context, " ", &context);
-				int c = atoi(t);
-				t = strtok_s(context, " ", &context);
-				int d = atoi(t);
-				t = strtok_s(context, " ", &context);
-				int e = atoi(t);
-				t = strtok_s(context, " ", &context);
-				int f = atoi(t);
-				t = strtok_s(context, " ", &context);
-				int g = atoi(t);
-				if (b == 0) {
-					Fighter recca(a, c, MaxDistance);
-					recca.setRLD(f);
-					recca.setPOW(e);
-					recca.setSPD(g);
-					recca.setHealth(d);
-					Enemy* re = &recca;
-					Q_Inactive.enqueue(re);
-				}
-				else if (b == 1) {
-					Healer tama(a, c, MaxDistance);
-					tama.setRLD(f);
-					tama.setPOW(e);
-					tama.setSPD(g);
-					tama.setHealth(d);
-					Enemy* ta = &tama;
-					Q_Inactive.enqueue(ta);
-				}
-				else if (b == 2) {
-					Freezer enyosha(a, c, MaxDistance);
-					enyosha.setRLD(f);
-					enyosha.setPOW(e);
-					enyosha.setSPD(g);
-					enyosha.setHealth(d);
-					Enemy* en = &enyosha;
-					Q_Inactive.enqueue(en);
-
-				}
+			t = strtok_s(line, " ", &context);
+			int a = atoi(t);
+			t = strtok_s(context, " ", &context);
+			int b = atoi(t);
+			t = strtok_s(context, " ", &context);
+			int c = atoi(t);
+			t = strtok_s(context, " ", &context);
+			int d = atoi(t);
+			t = strtok_s(context, " ", &context);
+			int e = atoi(t);
+			t = strtok_s(context, " ", &context);
+			int f = atoi(t);
+			t = strtok_s(context, " ", &context);
+			int g = atoi(t);
+			if (b == 0) {
+				Fighter* recca = new Fighter(a, c, MaxDistance);
+				recca->setRLD(f);
+				recca->setPOW(e);
+				recca->setSPD(g);
+				recca->setHealth(d);
+				Enemy* re = recca;
+				re->SetStatus(INAC);
+				Q_Inactive.enqueue(re);
+			}
+			else if (b == 1) {
+				Healer* tama = new Healer(a, c, MaxDistance);
+				tama->setRLD(f);
+				tama->setPOW(e);
+				tama->setSPD(g);
+				tama->setHealth(d);
+				Enemy* ta = tama;
+				ta->SetStatus(INAC);
+				Q_Inactive.enqueue(ta);
+			}
+			else if (b == 2) {
+				Freezer* enyosha = new Freezer(a, c, MaxDistance);
+				enyosha->setRLD(f);
+				enyosha->setPOW(e);
+				enyosha->setSPD(g);
+				enyosha->setHealth(d);
+				Enemy* en = enyosha;
+				en->SetStatus(INAC);
+				Q_Inactive.enqueue(en);
 			}
 		}
 	}

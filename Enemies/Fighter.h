@@ -3,7 +3,7 @@
 class Fighter : public Enemy 
 {
 public:
-	ENMY_TYPE getTYP() const;
+	ENMY_TYPE getType() const;
 	Fighter( int id, int arrTime, int d = MaxDistance);
 	~Fighter();
 };
