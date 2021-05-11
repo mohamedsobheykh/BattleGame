@@ -259,7 +259,8 @@ void GUI::UpdateInterface(int CurrentTimeStep)
 /*
 	AddOrderForDrawing: Adds a new item related to the passed Enemy to the drawing list
 */
-
+#include <iostream>
+using namespace std;
 void GUI::AddToDrawingList(const Enemy* pE)
 {
 	DrawingItem *pDitem=new DrawingItem;
@@ -270,7 +271,9 @@ void GUI::AddToDrawingList(const Enemy* pE)
 	// IMPORTANT [TO DO]
 	// enemy type has been generated randomly here because enemy classes are not written yet
 	// in next phases, to know enemy type, you should apply dynamic_cast to pE pointer
-	int eType = pDitem->ID%ENMY_TYPE_CNT;	
+
+	//////////Done
+	int eType = pE->getType();
 	pDitem->clr = DrawingColors[eType];
 	/////////////
 	/////////////
